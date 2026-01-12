@@ -22,36 +22,44 @@ class StyledString(str):
     def __radd__(self, other: object) -> StyledText:
         from .styled import StyledText
         return StyledText._from_parts(other, self)
-        
+
     def __getitem__(self, key):
         result = super().__getitem__(key)
         return StyledString(result, style=dict(self._style))
-    
-    def upper(self):
-        return StyledString(super().upper(), style=dict(self._style))
 
-    def lower(self):
-        return StyledString(super().lower(), style=dict(self._style))
+_string_methods = [
+    "upper", "lower", "capitalize", "title", "casefold", "swapcase",
+    "center", "ljust", "rjust", "zfill",
+    "strip", "lstrip", "rstrip",
+    "replace", "translate",
+    "join",
+    "partition", "rpartition",
+    "split", "rsplit", "splitlines",
+    "expandtabs",
+    "format", "format_map",
+]
 
-    def title(self):
-        return StyledString(super().title(), style=dict(self._style))
+def _wrap_string_method(method_name: str):
+    def wrapper(self: StyledString, *args, **kwargs):
+        result = getattr(str, method_name)(self, *args, **kwargs)
+        if isinstance(result, str):
+            return StyledString(result, style=dict(self._style))
+        if isinstance(result, list):
+            return [StyledString(s, style=dict(self._style)) if isinstance(s, str) else s for s in result]
+        if isinstance(result, tuple):
+            return tuple(StyledString(s, style=dict(self._style)) if isinstance(s, str) else s for s in result)
+        return result
+    return wrapper
 
-    def capitalize(self):
-        return StyledString(super().capitalize(), style=dict(self._style))
+for method in _string_methods:
+    setattr(StyledString, method, _wrap_string_method(method))
 
 class StyledText:
-    __slots__ = ("parts",)
+    __slots__ = ("_parts",)
 
     def __init__(self, parts: list[StyledString]):
-        self.parts = parts
-    
-    def __len__(self) -> int:
-        return sum(len(p) for p in self.parts)
-
-    def __iter__(self):
-        for part in self.parts:
-            yield part
-
+        self._parts = parts
+        
     @staticmethod
     def _from_parts(left: object, right: object) -> StyledText:
         parts: list[StyledString] = []
@@ -67,13 +75,23 @@ class StyledText:
         add(left)
         add(right)
         return StyledText(parts)
+        
+    @property
+    def parts(self) -> list[StyledString]:
+        return self._parts
+
+    def __len__(self) -> int:
+        return sum(len(p) for p in self.parts)
+
+    def __iter__(self):
+        yield from self.parts
 
     def __add__(self, other: object) -> StyledText:
         return StyledText._from_parts(self, other)
 
     def __radd__(self, other: object) -> StyledText:
         return StyledText._from_parts(other, self)
-    
+
     def __getitem__(self, key):
         if isinstance(key, slice):
             new_parts = []
@@ -89,8 +107,8 @@ class StyledText:
                 if current_index >= stop:
                     break
             return StyledText(new_parts)
-       
-        # Return single-character StyledString
+
+        # Single-character access
         index = key if key >= 0 else len(self) + key
         current_index = 0
         for part in self.parts:
@@ -98,7 +116,7 @@ class StyledText:
                 return part[index - current_index]
             current_index += len(part)
         raise IndexError("StyledText index out of range")
-    
+
     def upper(self):
         return StyledText([p.upper() for p in self.parts])
 
@@ -109,11 +127,10 @@ class StyledText:
         if not self.parts:
             return StyledText([])
         return StyledText([self.parts[0].capitalize()] + self.parts[1:])
-    
+
     def title(self):
         return StyledText([p.title() for p in self.parts])
 
     def __str__(self) -> str:
-        from .render import render
-        return render(self)
+        return "".join(str(p) for p in self.parts)
 
