@@ -1,6 +1,6 @@
 # TermTint
 
-A lightweight, cross-platform Python library for styling terminal output with colors and text modifiers. TermTint makes it easy to add colors and styling to your terminal applications. It provides an intuitive API for creating styled text that works consistently across Windows, macOS, and Linux. The library automatically handles platform differences and includes a no-color mode for environments where ANSI codes aren't supported.
+A lightweight, cross-platform Python library for styling terminal output with colors and text modifiers. It provides an intuitive API for creating styled text that works consistently across Windows, macOS, and Linux by automatically handling platform differences. Further a no-color mode is provided for environments where ANSI codes aren't supported.
 
 ## Getting Started For Regular Users
 Install TermTint using pip:
@@ -16,29 +16,40 @@ If you want to build and install TermTint from source:
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/yourusername/termtint.git
+git clone git@github.com:TobiasHafner/termtint.git
 cd termtint
 ```
 
 ### 2. Create a virtual environment
 ```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+python3 -m venv .venv
 ```
 
-### 3. Install in development mode
+### 3. Activate the virtual environment
+
+**Linux / macOS**
+```bash
+source .venv/bin/activate
+```
+
+**Windows**
+```powershell
+.venv\Scripts\Activate.ps1
+```
+
+### 4. Install in development mode
 ```bash
 pip install -e .
 ```
 
 This installs the package in "editable" mode, so changes to the source code are immediately reflected without reinstalling.
 
-### 4. Install development dependencies
+### 5. Install development dependencies
 ```bash
 pip install -e ".[dev]"
 ```
 
-### 5. Build the package
+### 6. Build the package
 ```bash
 python -m build
 ```
@@ -47,7 +58,7 @@ This creates distribution files in the `dist/` directory:
 - `termtint-x.x.x-py3-none-any.whl` (wheel format)
 - `termtint-x.x.x.tar.gz` (source distribution)
 
-### 6. Install from the built package
+### 7. Install from the built package
 ```bash
 pip install dist/termtint-x.x.x-py3-none-any.whl
 ```
@@ -102,8 +113,19 @@ A style is a dictionary that defines how text should appear. It uses `StyleKey` 
 style = {
     StyleKey.FOREGROUND: Color.RED,           # Optional: text color
     StyleKey.BACKGROUND: Color.WHITE,         # Optional: background color
-    StyleKey.MODIFIERS: (Modifier.BOLD,)      # Optional: text modifiers
+    StyleKey.MODIFIERS: [Modifier.BOLD]       # Optional: text modifiers (list)
 }
+```
+
+**Important Note About Modifiers:**
+Modifiers should be provided as a **list** (not a tuple):
+
+```python
+# Correct
+style = {StyleKey.MODIFIERS: [Modifier.BOLD, Modifier.UNDERLINE]}
+
+# Also works, but list is preferred
+style = {StyleKey.MODIFIERS: (Modifier.BOLD, Modifier.UNDERLINE)}
 ```
 
 **Reusing Styles:**
@@ -114,11 +136,11 @@ It's good practice to define styles once and reuse them throughout your applicat
 STYLES = {
     'error': {
         StyleKey.FOREGROUND: Color.RED,
-        StyleKey.MODIFIERS: (Modifier.BOLD,)
+        StyleKey.MODIFIERS: [Modifier.BOLD]
     },
     'success': {
         StyleKey.FOREGROUND: Color.GREEN,
-        StyleKey.MODIFIERS: (Modifier.BOLD,)
+        StyleKey.MODIFIERS: [Modifier.BOLD]
     },
     'info': {
         StyleKey.FOREGROUND: Color.BLUE
@@ -134,22 +156,23 @@ success_msg = StyledString("Task completed", style=STYLES['success'])
 ```
 
 ### Styled Strings
-A `StyledString` is the fundamental building block of TermTint. It's a string that carries styling information along with its text content.
+A `StyledString` is the fundamental building block of TermTint. It's a string with associated styling information.
 
 **Key Characteristics:**
-- **Behaves like a regular Python string**: You can use all standard string methods
-- **Preserves styling**: Operations like `upper()`, `lower()`, or slicing maintain the style
+- **Stores text and style separately**: The text is stored in the `text` attribute, and styling in the `style` dictionary
+- **Lightweight**: Uses `__slots__` for memory efficiency
+- **String representation**: The `__str__()` method returns only the plain text without styling
 - **Immutable styling**: Once created, the style doesn't change (but you can create new styled strings)
-- **Composable**: Can be concatenated with other styled strings
+- **Composable**: Can be concatenated with other styled strings or plain strings/objects
 
 **Creating Styled Strings:**
 ```python
 # With style
 my_style = {
     StyleKey.FOREGROUND: Color.RED,
-    StyleKey.MODIFIERS: (Modifier.BOLD,)
+    StyleKey.MODIFIERS: [Modifier.BOLD]
 }
-styled = StyledString("Hello",style=my_style})
+styled = StyledString("Hello", style=my_style)
 
 # Without style (plain text)
 plain = StyledString("Hello", style={})
@@ -157,55 +180,44 @@ plain = StyledString("Hello", style={})
 plain = StyledString("Hello")
 ```
 
-**String Operations:**
-`StyledString` supports all operations you'd expect from a regular string:
-
+**Accessing Properties:**
 ```python
-s = StyledString("hello world", style={StyleKey.FOREGROUND: Color.BLUE})
+s = StyledString("hello", style={StyleKey.FOREGROUND: Color.BLUE})
 
-# Case transformations
-s.upper()          # StyledString("HELLO WORLD") with same style
-s.lower()          # StyledString("hello world") with same style
-s.capitalize()     # StyledString("Hello world") with same style
-s.title()          # StyledString("Hello World") with same style
+# Access the plain text
+s.text          # "hello"
+str(s)          # "hello" (same as s.text)
 
-# Slicing
-s[0:5]             # StyledString("hello") with same style
-s[6:]              # StyledString("world") with same style
-s[-5:]             # StyledString("world") with same style
+# Access the style dictionary
+s.style         # {StyleKey.FOREGROUND: Color.BLUE}
 
-# String methods
-s.strip()          # Removes whitespace, preserves style
-s.replace("world", "Python")  # StyledString("hello Python") with same style
-s.split()          # Returns list of StyledString objects
-
-# Checking content
-len(s)             # 11
-"hello" in s       # True
-s.startswith("hello")  # True
+# Get length
+len(s)          # 5 (length of the text)
 ```
 
 **Concatenation:**
-When you concatenate `StyledString` objects with different styles, you create a `StyledText` object introduced in the next section:
+When you concatenate `StyledString` objects, you create a `StyledText` object:
 
 ```python
 red = StyledString("Red", style={StyleKey.FOREGROUND: Color.RED})
 blue = StyledString("Blue", style={StyleKey.FOREGROUND: Color.BLUE})
 
-# This creates a StyledText with two parts
-combined = red + " " + blue
+# All of these create StyledText objects
+combined1 = red + blue              # Two StyledStrings
+combined2 = red + " "               # StyledString + plain string
+combined3 = "Prefix: " + red        # Plain string + StyledString
 ```
 
 **Notes:**
-- Styling is preserved through transformations, but the style itself is immutable
-- When you modify a `StyledString`, you get a new `StyledString` with the same style
+- The `StyledString` class doesn't provide string manipulation methods like `upper()`, `lower()`, `split()`, etc. You need to manipulate the text yourself and create new `StyledString` objects if needed
+- Converting to string with `str()` returns only the plain text without any styling or ANSI codes
 - Empty strings can have styles: `StyledString("", style={StyleKey.FOREGROUND: Color.RED})`
 
 ### Styled Text
-A `StyledText` object represents multiple `StyledString` objects concatenated together, where each part can have its own independent styling.
+A `StyledText` object represents multiple parts concatenated together, where each part can have its own independent styling. Each part is stored internally as a `StyledString`.
 
 **Creating Styled Texts:**
-You don't typically create `StyledText` objects directly. They're automatically created when you concatenate `StyledString` objects:
+You don't typically create `StyledText` objects directly using the constructor. They're automatically created when you concatenate `StyledString` objects or mix styled strings with plain strings/objects:
 
 ```python
 part1 = StyledString("Error", style={StyleKey.FOREGROUND: Color.RED})
@@ -214,35 +226,52 @@ part3 = StyledString("Connection failed", style={StyleKey.FOREGROUND: Color.YELL
 
 # This automatically creates a StyledText with three parts
 message = part1 + part2 + part3
+
+# Mixing with plain strings also works
+mixed = part1 + " " + part2  # The " " becomes a StyledString internally
+```
+
+**How StyledText._from_parts() Works:**
+The `_from_parts()` static method intelligently handles different input types:
+- `StyledText` objects are flattened (their parts are extracted and added individually)
+- `StyledString` objects are added directly
+- Other objects are converted to strings and wrapped in a `StyledString` with no styling
+
+```python
+# These all work
+text1 = StyledString("Hello") + StyledString("World")
+text2 = StyledString("Hello") + " World"  # String becomes StyledString
+text3 = StyledString("Count: ") + 42       # Number becomes StyledString("42")
 ```
 
 **Structure:**
-A `StyledText` maintains a list of `StyledString` parts:
+A `StyledText` maintains a list of `StyledString` parts accessible via the `parts` property:
 
 ```python
 # Accessing parts
 for part in message.parts:
-    print(f"Text: {part}, Style: {part.style}")
+    print(f"Text: {part.text}, Style: {part.style}")
 ```
 
 **Operations:**
-Like `StyledString`, `StyledText` supports many string-like operations:
+`StyledText` supports several operations:
 
 ```python
 text = red_string + " " + blue_string + " " + green_string
 
-# Concatenation
+# Concatenation (returns new StyledText)
 more_text = text + StyledString(" More", style={StyleKey.FOREGROUND: Color.YELLOW})
+more_text = text + " More"  # Also works
 
-# Slicing (returns a new StyledText)
-text[0:10]
-
-# Length
+# Length (total length of all parts)
 len(text)
 
-# Iteration
-for part in text.parts:
+# Iteration over parts
+for part in text:
     print(render(part))
+
+# String representation (plain text only, no styling)
+str(text)  # Concatenated plain text from all parts
 ```
 
 **Why StyledText Matters:**
@@ -257,7 +286,7 @@ timestamp = StyledString("[2024-01-12 10:30:15]", style={
 level = StyledString(" ERROR ", style={
     StyleKey.FOREGROUND: Color.WHITE,
     StyleKey.BACKGROUND: Color.RED,
-    StyleKey.MODIFIERS: (Modifier.BOLD,)
+    StyleKey.MODIFIERS: [Modifier.BOLD]
 })
 
 message = StyledString(" Database connection failed", style={
@@ -270,7 +299,7 @@ print(render(log_line))
 
 ### The Render Function
 
-The `render()` function is what converts your styled objects (`StyledString` or `StyledText`) into a regular python string ANSI escape codes. This regular string can then be printed to the console.
+The `render()` function converts your styled objects (`StyledString` or `StyledText`) into a string with ANSI escape codes that can be printed to the terminal.
 
 **Usage:**
 ```python
@@ -278,12 +307,35 @@ from termtint.render import render
 
 styled = StyledString("Hello", style={StyleKey.FOREGROUND: Color.RED})
 output = render(styled)
-print(output)
+print(output)  # Prints "Hello" in red
 ```
 
+**How It Works:**
+The render function processes styled objects using a stack-based approach:
+- For `StyledText` objects, it processes each part individually
+- For `StyledString` objects, it extracts color and modifier information from the style dictionary and generates appropriate ANSI codes
+- ANSI codes are wrapped around the text: `\033[<codes>m<text>\033[0m`
+
 **Color Control:**
-For some usecases it might be desired to be able to ignore all styling. Therefore two functions are provided:
-`enable_colors()` enables the rendering of styles while `disable_colors()` disables the rendering of colors. Colors are enabled by default. If deactivated the output of the render function contains no ANSI escape codes.
+You can globally enable or disable color rendering:
+
+```python
+from termtint.render import enable_colors, disable_colors
+
+# Disable colors (returns plain text without ANSI codes)
+disable_colors()
+print(render(styled))  # Prints plain "Hello" without colors
+
+# Re-enable colors
+enable_colors()
+print(render(styled))  # Prints "Hello" in red again
+```
+
+When colors are disabled, `render()` returns only the plain text content, which is useful for:
+- Logging to files
+- Running in environments without ANSI support
+- Testing
+- Piping output to other programs
 
 **Performance:**
 Rendering is lightweight, but if you're rendering the same styled text repeatedly in a loop, consider rendering once and reusing the result:
@@ -299,3 +351,43 @@ for i in range(1000):
     print(rendered)
 ```
 
+## Complete Example
+
+Here's a complete example showing how to use TermTint:
+
+```python
+from termtint.styled import StyledString, StyledText
+from termtint.attributes import Color, Modifier, StyleKey
+from termtint.render import render
+
+# Define some styles
+error_style = {
+    StyleKey.FOREGROUND: Color.RED,
+    StyleKey.MODIFIERS: [Modifier.BOLD]
+}
+
+success_style = {
+    StyleKey.FOREGROUND: Color.GREEN,
+    StyleKey.MODIFIERS: [Modifier.BOLD]
+}
+
+info_style = {
+    StyleKey.FOREGROUND: Color.CYAN
+}
+
+# Create styled strings
+header = StyledString("=== System Status ===", style={
+    StyleKey.FOREGROUND: Color.BRIGHT_WHITE,
+    StyleKey.MODIFIERS: [Modifier.BOLD, Modifier.UNDERLINE]
+})
+
+error_msg = StyledString("ERROR: ", style=error_style) + "Database connection failed"
+success_msg = StyledString("SUCCESS: ", style=success_style) + "Server started on port 8080"
+info_msg = StyledString("INFO: ", style=info_style) + "Loading configuration..."
+
+# Render and print
+print(render(header))
+print(render(error_msg))
+print(render(success_msg))
+print(render(info_msg))
+```
