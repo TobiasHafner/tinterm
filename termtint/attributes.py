@@ -1,6 +1,6 @@
-from enum import IntEnum, Enum
-from typing import Final
 from dataclasses import dataclass
+from enum import Enum, IntEnum
+
 
 class Modifier(IntEnum):
     BOLD = 1
@@ -10,11 +10,13 @@ class Modifier(IntEnum):
     BLINK = 5
     REVERSE = 7
     STRIKETHROUGH = 9
-    
+
+
 @dataclass(frozen=True)
 class AnsiColor:
     foreground: int
     background: int
+
 
 class Color(Enum):
     BLACK = AnsiColor(30, 40)
@@ -35,8 +37,8 @@ class Color(Enum):
     BRIGHT_CYAN = AnsiColor(96, 106)
     BRIGHT_WHITE = AnsiColor(97, 107)
 
+
 class StyleKey(Enum):
     FOREGROUND = "style_key_foreground"
     BACKGROUND = "style_key_background"
     MODIFIERS = "style_key_modifiers"
-    

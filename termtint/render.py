@@ -1,22 +1,37 @@
-from typing import Union
 from collections import deque
-from .styled import StyledString, StyledText
+from typing import Union
+
 from .attributes import Color, Modifier, StyleKey
+from .styled import StyledString, StyledText
 
 _ENABLED: bool = True
 _EXTRACTORS = [
-    (StyleKey.FOREGROUND, lambda c: str(c.value.foreground) if isinstance(c, Color) else None),
-    (StyleKey.BACKGROUND, lambda c: str(c.value.background) if isinstance(c, Color) else None),
-    (StyleKey.MODIFIERS, lambda mods: [str(m.value) for m in mods if isinstance(m, Modifier)] if mods else []),
+    (
+        StyleKey.FOREGROUND,
+        lambda c: str(c.value.foreground) if isinstance(c, Color) else None,
+    ),
+    (
+        StyleKey.BACKGROUND,
+        lambda c: str(c.value.background) if isinstance(c, Color) else None,
+    ),
+    (
+        StyleKey.MODIFIERS,
+        lambda mods: (
+            [str(m.value) for m in mods if isinstance(m, Modifier)] if mods else []
+        ),
+    ),
 ]
+
 
 def enable_colors():
     global _ENABLED
     _ENABLED = True
 
+
 def disable_colors():
     global _ENABLED
     _ENABLED = False
+
 
 def _render_no_color(value: Union[StyledString, StyledText]) -> str:
     stack = deque([value])
@@ -30,6 +45,7 @@ def _render_no_color(value: Union[StyledString, StyledText]) -> str:
             result.append(str(v))
 
     return "".join(result)
+
 
 def render(value: Union[StyledString, StyledText]) -> str:
     if not _ENABLED:
@@ -61,4 +77,3 @@ def render(value: Union[StyledString, StyledText]) -> str:
             result.append(text)
 
     return "".join(result)
-

@@ -1,6 +1,7 @@
 from __future__ import annotations
-from typing import Any, Mapping, Iterable, Sequence
+
 from types import MappingProxyType
+from typing import Any, Iterable, Mapping, Sequence
 
 from .attributes import StyleKey
 
@@ -28,11 +29,14 @@ class StyledString:
 
     def __add__(self, other: object) -> StyledText:
         from .styled import StyledText
+
         return StyledText._from_parts(self, other)
 
     def __radd__(self, other: object) -> StyledText:
         from .styled import StyledText
+
         return StyledText._from_parts(other, self)
+
 
 class StyledText:
     __slots__ = ("_parts",)
@@ -74,4 +78,3 @@ class StyledText:
 
     def __str__(self) -> str:
         return "".join(p.text for p in self._parts)
-
