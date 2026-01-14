@@ -2,10 +2,7 @@ name: Commit Checks
 
 on:
   push:
-    branches-ignore:
-      - 'release-v*'
   pull_request:
-    branches: [ '**' ]
   workflow_dispatch:
 
 jobs:

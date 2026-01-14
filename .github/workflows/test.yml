@@ -33,5 +33,5 @@ jobs:
     
     - name: Run tests with pytest
       run: |
-        pytest tests/ -v --cov=termtint --cov-report=term-missing --cov-report=xml
+        pytest tests/ -v --cov=tinterm --cov-report=term-missing --cov-report=xml
     
