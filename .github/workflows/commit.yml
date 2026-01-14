@@ -17,7 +17,3 @@ jobs:
     needs: format
     uses: ./.github/workflows/test.yml
   
-  build:
-    name: Build package
-    needs: test
-    uses: ./.github/workflows/build.yml
