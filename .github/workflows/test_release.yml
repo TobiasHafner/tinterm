@@ -60,7 +60,7 @@ jobs:
             ⚠️ This is a test release. Use the production release for actual deployments.
           draft: true
           prerelease: true
-          files: dist/*
+          files: dist/*.whl
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       

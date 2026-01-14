@@ -58,7 +58,7 @@ jobs:
             ```
           draft: false
           prerelease: false
-          files: dist/*
+          files: dist/*.whl
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
