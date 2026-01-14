@@ -15,7 +15,6 @@ def print_section_header(text):
 def print_color_table():
     print_section_header("FOREGROUND COLORS")
     
-    # Standard colors
     standard_colors = [
         Color.BLACK, Color.RED, Color.GREEN, Color.YELLOW,
         Color.BLUE, Color.MAGENTA, Color.CYAN, Color.WHITE
@@ -38,7 +37,6 @@ def print_color_table():
     
     print()
     
-    # Bright colors
     bright_colors = [
         Color.BRIGHT_BLACK, Color.BRIGHT_RED, Color.BRIGHT_GREEN, Color.BRIGHT_YELLOW,
         Color.BRIGHT_BLUE, Color.BRIGHT_MAGENTA, Color.BRIGHT_CYAN, Color.BRIGHT_WHITE
@@ -115,7 +113,6 @@ def print_modifier_table():
 def print_combination_examples():
     print_section_header("COMBINATION EXAMPLES")
     
-    # Error message
     error_label = StyledString("ERROR", style={
         StyleKey.FOREGROUND: Color.WHITE,
         StyleKey.BACKGROUND: Color.RED,
