@@ -1,4 +1,4 @@
-name: Release to PyPI
+name: Test Release to Test PyPI
 on:
   workflow_dispatch:
     inputs:
@@ -24,11 +24,11 @@ jobs:
     needs: test
     uses: ./.github/workflows/build.yml
   
-  release:
-    name: Release to PyPI
+  test-release:
+    name: Release to Test PyPI
     needs: build
     runs-on: ubuntu-latest
-    environment: pypi
+    environment: test-pypi
     permissions:
       contents: write
       id-token: write
@@ -51,25 +51,27 @@ jobs:
       - name: Build package
         run: python -m build
       
-      - name: Create GitHub Release
+      - name: Create GitHub Release (Draft)
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: v${{ inputs.version }}
-          name: Release v${{ inputs.version }}
+          tag_name: v${{ inputs.version }}-test
+          name: Test Release v${{ inputs.version }}
           body: |
-            Release version ${{ inputs.version }}
+            Test release version ${{ inputs.version }}
             
-            ## Installation
+            ## Installation from Test PyPI
             ```bash
-            pip install tinterm==${{ inputs.version }}
+            pip install --index-url https://test.pypi.org/simple/ tinterm==${{ inputs.version }}
             ```
-          draft: false
-          prerelease: false
+            
+            ⚠️ This is a test release. Use the production release for actual deployments.
+          draft: true
+          prerelease: true
           files: dist/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
-      - name: Publish to PyPI
+      - name: Publish to Test PyPI
         uses: pypa/gh-action-pypi-publish@v1.8.14
         with:
           repository-url: https://test.pypi.org/legacy/
