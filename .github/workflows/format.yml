@@ -30,7 +30,7 @@ jobs:
     
     - name: Remove unused imports with autoflake
       run: |
-        autoflake --in-place --remove-all-unused-imports --remove-unused-variables --recursive termtint/ tests/
+        autoflake --in-place --remove-all-unused-imports --remove-unused-variables --recursive src/termtint/ tests/ demo/
     
     - name: Sort imports with isort
       run: |
@@ -38,7 +38,7 @@ jobs:
     
     - name: Format code with black
       run: |
-        black termtint/ tests/
+        black src/termtint/ tests/ demo/
     
     - name: Check for changes
       id: verify_diff
