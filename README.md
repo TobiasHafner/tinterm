@@ -1,6 +1,16 @@
 # TinTerm
 
-A lightweight, cross-platform Python library for styling terminal output with colors and text modifiers. It provides an intuitive API for creating styled text that works consistently across Windows, macOS, and Linux by automatically handling platform differences. Further a no-color mode is provided for environments where ANSI codes aren't supported.
+A lightweight Python library for styling terminal output with colors and text modifiers.
+
+## Why Another Terminal Color Library?
+
+TinTerm takes a different approach to terminal styling with three key design principles:
+
+1. **Strict separation of style and text:** Style information is kept separate from your text content, making it easy to work with the plain text while keeping styles consistent.
+
+2. **Lazy rendering:** Styled objects don't generate ANSI codes until you explicitly render them, giving you full control over when and where colors are applied.
+
+3. **Zero-configuration color control:** Toggle colors on/off globally with a single call. Perfect for logging to files, CI environments, or respecting `NO_COLOR` conventions.
 
 ## Getting Started For Regular Users
 Install TinTerm using pip:
