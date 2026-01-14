@@ -63,6 +63,21 @@ This creates distribution files in the `dist/` directory:
 pip install dist/termtint-x.x.x-py3-none-any.whl
 ```
 
+### 8. Run the Demo
+To verify the installation and to see TermTint's features in action, you can run the included demo application:
+
+```bash
+# From the repository root directory
+python demo/demo.py
+```
+
+The demo displays:
+- All 16 foreground colors (standard and bright variants)
+- All background colors with contrasting text
+- All 7 text modifiers (bold, dim, italic, underline, blink, reverse, strikethrough)
+- Practical examples like error/success/warning messages
+- Creative combinations like rainbow text
+
 ## Basic Concepts
 Understanding these core concepts will help you use TermTint effectively.
 
