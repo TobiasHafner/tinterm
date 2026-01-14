@@ -1,5 +1,4 @@
 import pytest
-
 from termtint.attributes import Color, Modifier, StyleKey
 from termtint.styled import StyledString, StyledText
 
