@@ -7,6 +7,22 @@ on:
   workflow_dispatch:
 
 jobs:
+  format:
+    name: Format code
+    uses: ./.github/workflows/format.yml
+    permissions:
+      contents: write
+  
+  test:
+    name: Run tests
+    needs: format
+    uses: ./.github/workflows/test.yml
+  
+  build:
+    name: Build package
+    needs: test
+    uses: ./.github/workflows/build.yml
+  
   release:
     name: Release to PyPI
     runs-on: ubuntu-latest
