@@ -1,4 +1,5 @@
 import pytest
+
 from tinterm.attributes import Color, Modifier, StyleKey
 from tinterm.styled import StyledString, StyledText
 
