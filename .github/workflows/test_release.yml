@@ -43,6 +43,27 @@ jobs:
         with:
           name: dist-packages
           path: dist
+
+      - name: Inspect build artifacts
+        run: |
+          echo "Listing all files in dist:"
+          ls -l dist/
+          echo ""
+          
+          echo "Contents of the .whl:"
+          unzip -l dist/*.whl
+          echo ""
+          
+          echo "Show METADATA inside wheel:"
+          unzip -p dist/*.whl *.dist-info/METADATA
+          echo ""
+          
+          echo "Contents of the sdist (.tar.gz):"
+          tar -tzf dist/*.tar.gz
+          echo ""
+          
+          echo "Show PKG-INFO inside sdist:"
+          tar -xOzf dist/*.tar.gz */PKG-INFO
       
       - name: Create GitHub Release (Draft)
         uses: softprops/action-gh-release@v1
