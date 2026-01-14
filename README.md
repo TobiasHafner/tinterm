@@ -33,6 +33,12 @@ source .venv/bin/activate
 ```
 
 **Windows**
+In cmd:
+```bash
+.venv\Scripts\activate
+```
+
+In powershell:
 ```powershell
 .venv\Scripts\Activate.ps1
 ```
