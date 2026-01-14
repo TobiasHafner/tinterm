@@ -44,16 +44,6 @@ jobs:
           name: dist-packages
           path: dist
 
-      - name: Inspect build artifacts
-        run: | 
-          echo "Contents of the .whl:"
-          unzip -l dist/*.whl
-          echo ""
-          
-          echo "Show METADATA inside wheel:"
-          unzip -p dist/*.whl *.dist-info/METADATA
-          echo ""
-
       - name: Create GitHub Release (Draft)
         uses: softprops/action-gh-release@v1
         with:
@@ -70,7 +60,7 @@ jobs:
             ⚠️ This is a test release. Use the production release for actual deployments.
           draft: true
           prerelease: true
-          files: dist/*.whl
+          files: dist/
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
