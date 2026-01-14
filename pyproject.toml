@@ -3,7 +3,7 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "termtint"
+name = "tinterm"
 version = "0.1.0"
 description = "A lightweight Python library for coloring terminal output with zero dependencies."
 readme = "README.md"
@@ -23,7 +23,7 @@ classifiers = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/TobiasHafner/termtint"
+Homepage = "https://github.com/TobiasHafner/tinterm"
 
 [project.optional-dependencies]
 dev = [

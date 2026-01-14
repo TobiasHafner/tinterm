@@ -1,6 +1,6 @@
-from termtint.styled import StyledString
-from termtint.attributes import Color, Modifier, StyleKey
-from termtint.render import render
+from tinterm.styled import StyledString
+from tinterm.attributes import Color, Modifier, StyleKey
+from tinterm.render import render
 
 
 def print_section_header(text):
