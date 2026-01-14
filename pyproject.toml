@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=68"]
+requires = ["setuptools>=80"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -16,17 +16,17 @@ dependencies = [
   "colorama; platform_system == 'Windows'"
 ]
 
-classifiers = [
-  "Programming Language :: Python :: 3",
-  "License :: OSI Approved :: Apache 2.0",
-  "Operating System :: OS Independent",
-]
-
 [project.urls]
 Homepage = "https://github.com/TobiasHafner/tinterm"
 
 [project.optional-dependencies]
 dev = [
-  "pytest>=7.0"
+  "pytest>=9.0.2"
 ]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
 
