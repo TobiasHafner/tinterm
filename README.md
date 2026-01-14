@@ -1,23 +1,23 @@
-# TermTint
+# TinTerm
 
 A lightweight, cross-platform Python library for styling terminal output with colors and text modifiers. It provides an intuitive API for creating styled text that works consistently across Windows, macOS, and Linux by automatically handling platform differences. Further a no-color mode is provided for environments where ANSI codes aren't supported.
 
 ## Getting Started For Regular Users
-Install TermTint using pip:
+Install TinTerm using pip:
 
 ```bash
-pip install termtint
+pip install tinterm
 ```
 
 **Note:** On Windows, the `colorama` package is automatically installed as a dependency to enable ANSI color support.
 
 ## Getting Started For Developers
-If you want to build and install TermTint from source:
+If you want to build and install TinTerm from source:
 
 ### 1. Clone the repository
 ```bash
-git clone git@github.com:TobiasHafner/termtint.git
-cd termtint
+git clone git@github.com:TobiasHafner/tinterm.git
+cd tinterm
 ```
 
 ### 2. Create a virtual environment
@@ -61,16 +61,16 @@ python -m build
 ```
 
 This creates distribution files in the `dist/` directory:
-- `termtint-x.x.x-py3-none-any.whl` (wheel format)
-- `termtint-x.x.x.tar.gz` (source distribution)
+- `tinterm-x.x.x-py3-none-any.whl` (wheel format)
+- `tinterm-x.x.x.tar.gz` (source distribution)
 
 ### 7. Install from the built package
 ```bash
-pip install dist/termtint-x.x.x-py3-none-any.whl
+pip install dist/tinterm-x.x.x-py3-none-any.whl
 ```
 
 ### 8. Run the Demo
-To verify the installation and to see TermTint's features in action, you can run the included demo application:
+To verify the installation and to see TinTerm's features in action, you can run the included demo application:
 
 ```bash
 # From the repository root directory
@@ -85,11 +85,11 @@ The demo displays:
 - Creative combinations like rainbow text
 
 ## Basic Concepts
-Understanding these core concepts will help you use TermTint effectively.
+Understanding these core concepts will help you use TinTerm effectively.
 
 ### Colors
-TermTint supports two types of colors: **foreground** (text color) and **background** (background color). Colors are defined using the `Color` enum and can be applied to text through the style dictionary.
-TermTint provides 16 colors total: 8 standard colors and 8 bright variants.
+TinTerm supports two types of colors: **foreground** (text color) and **background** (background color). Colors are defined using the `Color` enum and can be applied to text through the style dictionary.
+TinTerm provides 16 colors total: 8 standard colors and 8 bright variants.
 
 **Standard Colors:**
 - `Color.BLACK` - Standard black
@@ -177,7 +177,7 @@ success_msg = StyledString("Task completed", style=STYLES['success'])
 ```
 
 ### Styled Strings
-A `StyledString` is the fundamental building block of TermTint. It's a string with associated styling information.
+A `StyledString` is the fundamental building block of TinTerm. It's a string with associated styling information.
 
 **Key Characteristics:**
 - **Stores text and style separately**: The text is stored in the `text` attribute, and styling in the `style` dictionary
@@ -324,7 +324,7 @@ The `render()` function converts your styled objects (`StyledString` or `StyledT
 
 **Usage:**
 ```python
-from termtint.render import render
+from tinterm.render import render
 
 styled = StyledString("Hello", style={StyleKey.FOREGROUND: Color.RED})
 output = render(styled)
@@ -341,7 +341,7 @@ The render function processes styled objects using a stack-based approach:
 You can globally enable or disable color rendering:
 
 ```python
-from termtint.render import enable_colors, disable_colors
+from tinterm.render import enable_colors, disable_colors
 
 # Disable colors (returns plain text without ANSI codes)
 disable_colors()
@@ -374,12 +374,12 @@ for i in range(1000):
 
 ## Complete Example
 
-Here's a complete example showing how to use TermTint:
+Here's a complete example showing how to use TinTerm:
 
 ```python
-from termtint.styled import StyledString, StyledText
-from termtint.attributes import Color, Modifier, StyleKey
-from termtint.render import render
+from tinterm.styled import StyledString, StyledText
+from tinterm.attributes import Color, Modifier, StyleKey
+from tinterm.render import render
 
 # Define some styles
 error_style = {
