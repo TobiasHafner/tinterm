@@ -139,7 +139,7 @@ def print_combination_examples():
     error_msg = StyledString(
         " Connection failed", style={StyleKey.FOREGROUND: Color.RED}
     )
-    
+
     print(render(error_label + error_msg))
 
     success_label = StyledString(
