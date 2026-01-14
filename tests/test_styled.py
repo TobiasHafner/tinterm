@@ -1,6 +1,6 @@
 import pytest
-from termtint.attributes import Color, Modifier, StyleKey
-from termtint.styled import StyledString, StyledText
+from tinterm.attributes import Color, Modifier, StyleKey
+from tinterm.styled import StyledString, StyledText
 
 
 class TestStyledString:

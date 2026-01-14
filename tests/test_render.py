@@ -1,6 +1,6 @@
-from termtint.attributes import Color, Modifier, StyleKey
-from termtint.render import _render_no_color, disable_colors, enable_colors, render
-from termtint.styled import StyledString, StyledText
+from tinterm.attributes import Color, Modifier, StyleKey
+from tinterm.render import _render_no_color, disable_colors, enable_colors, render
+from tinterm.styled import StyledString, StyledText
 
 
 class TestEnableDisableColors:

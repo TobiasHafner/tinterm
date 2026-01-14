@@ -1,4 +1,4 @@
-from termtint.attributes import AnsiColor, Color, Modifier, StyleKey
+from tinterm.attributes import AnsiColor, Color, Modifier, StyleKey
 
 
 def test_modifier_bold():
